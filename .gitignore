@@ -1,0 +1,13 @@
+# node
+node_modules
+dist
+
+# java
+target
+*.log
+*.class
+
+# IDE
+.idea
+.vscode
+.agent
