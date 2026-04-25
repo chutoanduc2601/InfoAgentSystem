@@ -17,11 +17,11 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed }) => {
   const [history] = useState([
-    "How does quantum computing work?",
-    "Latest AI trends in 2026",
-    "React vs Vue performance",
-    "Explain black holes simply",
-    "Best practices for API design"
+    "Máy tính lượng tử hoạt động như thế nào?",
+    "Xu hướng AI mới nhất 2026",
+    "Hiệu suất React vs Vue",
+    "Giải thích lỗ đen đơn giản",
+    "Thực hành tốt nhất về thiết kế API"
   ]);
   const location = useLocation();
 
@@ -52,10 +52,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
         <Link 
           to="/"
           className="flex items-center justify-center w-full bg-blue-600 hover:bg-blue-500 text-white rounded-lg p-3 transition-colors shadow-md"
-          title="New Question"
+          title="Câu hỏi mới"
         >
           <Plus size={20} />
-          {!isCollapsed && <span className="ml-2 font-medium">New Question</span>}
+          {!isCollapsed && <span className="ml-2 font-medium">Câu hỏi mới</span>}
         </Link>
       </div>
 
@@ -63,7 +63,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
       <div className="flex-1 overflow-y-auto px-3 py-2 scrollbar-thin scrollbar-thumb-[#2a4590]">
         {!isCollapsed && (
           <h3 className="text-xs font-semibold text-blue-300 uppercase tracking-wider mb-3 px-2">
-            History
+            Lịch sử
           </h3>
         )}
         <ul className="space-y-1">
@@ -105,7 +105,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
           {!isCollapsed && (
             <div className="ml-3 text-left">
               <p className="text-sm font-medium">Alex Developer</p>
-              <p className="text-xs text-blue-300">Free Plan</p>
+              <p className="text-xs text-blue-300">Gói miễn phí</p>
             </div>
           )}
         </button>
@@ -113,10 +113,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
           className={`flex items-center w-full p-2 mt-1 rounded-lg hover:bg-[#2a4590] transition-colors ${
             isCollapsed ? 'justify-center' : ''
           }`}
-          title="Settings"
+          title="Cài đặt"
         >
           <Settings size={20} className="text-gray-400 shrink-0" />
-          {!isCollapsed && <span className="ml-3 text-sm text-gray-200">Settings</span>}
+          {!isCollapsed && <span className="ml-3 text-sm text-gray-200">Cài đặt</span>}
         </button>
       </div>
     </aside>

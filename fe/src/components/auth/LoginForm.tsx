@@ -22,13 +22,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, onLoginSucce
   return (
     <div className="w-full max-w-md mx-auto p-8 bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/20">
       <div className="mb-8 text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome Back</h2>
-        <p className="text-gray-500 text-sm">Sign in to access your intelligent dashboard</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Chào mừng trở lại</h2>
+        <p className="text-gray-500 text-sm">Đăng nhập để truy cập bảng điều khiển thông minh của bạn</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-1.5">
-          <label className="block text-sm font-medium text-gray-700">Email Address</label>
+          <label className="block text-sm font-medium text-gray-700">Địa chỉ Email</label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Mail className="h-5 w-5 text-gray-400" />
@@ -39,13 +39,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, onLoginSucce
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1e3a8a] focus:border-[#1e3a8a] sm:text-sm transition-colors"
-              placeholder="you@company.com"
+              placeholder="ban@congty.com"
             />
           </div>
         </div>
 
         <div className="space-y-1.5">
-          <label className="block text-sm font-medium text-gray-700">Password</label>
+          <label className="block text-sm font-medium text-gray-700">Mật khẩu</label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Lock className="h-5 w-5 text-gray-400" />
@@ -77,13 +77,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, onLoginSucce
               className="h-4 w-4 text-[#1e3a8a] focus:ring-[#1e3a8a] border-gray-300 rounded"
             />
             <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-              Remember me
+              Ghi nhớ đăng nhập
             </label>
           </div>
 
           <div className="text-sm">
             <a href="#" className="font-medium text-[#1e3a8a] hover:text-[#2e4a9a]">
-              Forgot password?
+              Quên mật khẩu?
             </a>
           </div>
         </div>
@@ -92,7 +92,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, onLoginSucce
           type="submit"
           className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#1e3a8a] hover:bg-[#2e4a9a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1e3a8a] transition-colors"
         >
-          Sign in
+          Đăng nhập
         </button>
       </form>
 
@@ -102,7 +102,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, onLoginSucce
             <div className="w-full border-t border-gray-300" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">Or continue with</span>
+            <span className="px-2 bg-white text-gray-500">Hoặc tiếp tục với</span>
           </div>
         </div>
 
@@ -126,12 +126,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, onLoginSucce
       </div>
 
       <div className="mt-6 text-center text-sm">
-        <span className="text-gray-600">Don't have an account? </span>
+        <span className="text-gray-600">Chưa có tài khoản? </span>
         <button 
           onClick={onToggleMode}
           className="font-medium text-[#1e3a8a] hover:text-[#2e4a9a]"
         >
-          Sign up now
+          Đăng ký ngay
         </button>
       </div>
     </div>

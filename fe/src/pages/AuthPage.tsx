@@ -30,10 +30,10 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
           </div>
 
           <h1 className="text-4xl lg:text-5xl font-bold leading-tight mb-6">
-            Multi-Agent Intelligent Information Processing
+            Xử lý Thông tin Thông minh Đa tác nhân
           </h1>
           <p className="text-blue-100 text-lg max-w-md mb-12">
-            Harness the power of decentralized AI agents to orchestrate, search, and verify complex data with unprecedented accuracy.
+            Tận dụng sức mạnh của các AI agent phi tập trung để điều phối, tìm kiếm và xác thực dữ liệu phức tạp với độ chính xác chưa từng có.
           </p>
 
           <div className="space-y-6">
@@ -42,8 +42,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
                 <Workflow className="text-blue-300" size={24} />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Automated Orchestration</h3>
-                <p className="text-blue-200 text-sm">Agents coordinate tasks seamlessly.</p>
+                <h3 className="font-semibold text-lg">Điều phối Tự động</h3>
+                <p className="text-blue-200 text-sm">Các agent phối hợp các tác vụ một cách mượt mà.</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -51,8 +51,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
                 <Zap className="text-blue-300" size={24} />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Real-time Processing</h3>
-                <p className="text-blue-200 text-sm">Lightning-fast data synthesis.</p>
+                <h3 className="font-semibold text-lg">Xử lý Thời gian thực</h3>
+                <p className="text-blue-200 text-sm">Tổng hợp dữ liệu nhanh như chớp.</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -60,15 +60,15 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
                 <Shield className="text-blue-300" size={24} />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Verified Intelligence</h3>
-                <p className="text-blue-200 text-sm">Multi-step verification pipelines.</p>
+                <h3 className="font-semibold text-lg">Trí tuệ được Xác thực</h3>
+                <p className="text-blue-200 text-sm">Các luồng xác thực nhiều bước.</p>
               </div>
             </div>
           </div>
         </div>
 
         <div className="relative z-10 text-blue-200 text-sm">
-          &copy; {new Date().getFullYear()} InfoAgent System. All rights reserved.
+          &copy; {new Date().getFullYear()} InfoAgent System. Đã đăng ký bản quyền.
         </div>
       </div>
 
