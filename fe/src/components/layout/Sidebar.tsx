@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { supabase } from '../../lib/supabase';
 import { 
   Bot, 
   Plus, 
@@ -24,6 +25,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
     "Thực hành tốt nhất về thiết kế API"
   ]);
   const location = useLocation();
+  const [userName, setUserName] = useState<string>('Đang tải...');
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        // user_metadata.full_name was saved during sign up
+        setUserName(user.user_metadata?.full_name || user.email?.split('@')[0] || 'Người dùng');
+      } else {
+        setUserName('Khách');
+      }
+    };
+    fetchUser();
+  }, []);
 
   return (
     <aside 
@@ -104,7 +119,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
           </div>
           {!isCollapsed && (
             <div className="ml-3 text-left">
-              <p className="text-sm font-medium">Alex Developer</p>
+              <p className="text-sm font-medium">{userName}</p>
               <p className="text-xs text-blue-300">Gói miễn phí</p>
             </div>
           )}
