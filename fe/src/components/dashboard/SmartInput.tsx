@@ -15,10 +15,10 @@ export const SmartInput = () => {
   };
 
   const suggestions = [
-    "Summarize latest tech news",
-    "Explain quantum computing",
-    "Compare React vs Vue performance",
-    "Best practices for API design"
+    "Tóm tắt tin tức công nghệ mới nhất",
+    "Giải thích máy tính lượng tử",
+    "So sánh hiệu suất React và Vue",
+    "Thực hành tốt nhất về thiết kế API"
   ];
 
   return (
@@ -43,7 +43,7 @@ export const SmartInput = () => {
           onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          placeholder="Ask InfoAgent anything..."
+          placeholder="Hỏi InfoAgent bất cứ điều gì..."
           className="flex-1 bg-transparent border-none py-5 text-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-0 w-full"
         />
         
@@ -71,7 +71,7 @@ export const SmartInput = () => {
       >
         <div className="flex items-center mr-2 text-sm font-medium text-gray-500">
           <Sparkles size={16} className="mr-1.5 text-blue-500" />
-          Suggestions:
+          Gợi ý:
         </div>
         {suggestions.map((suggestion, index) => (
           <button

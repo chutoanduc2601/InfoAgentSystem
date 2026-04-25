@@ -20,7 +20,7 @@ export const SearchDashboard = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1, duration: 0.5 }}
           >
-            Intelligent Discovery
+            Khám phá Thông minh
           </motion.h1>
           <motion.p 
             className="text-gray-500 text-lg md:text-xl max-w-2xl mx-auto"
@@ -28,7 +28,7 @@ export const SearchDashboard = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            Leverage the power of our Multi-Agent system to retrieve, process, and summarize complex information in real-time.
+            Tận dụng sức mạnh của hệ thống Đa tác nhân (Multi-Agent) để truy xuất, xử lý và tóm tắt thông tin phức tạp theo thời gian thực.
           </motion.p>
         </div>
 

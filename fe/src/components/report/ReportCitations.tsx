@@ -17,7 +17,7 @@ export const ReportCitations = ({ citations }: ReportCitationsProps) => {
     <div className="mt-12 pt-8 border-t border-gray-200">
       <div className="flex items-center mb-6">
         <BookOpen size={20} className="text-gray-500 mr-2" />
-        <h3 className="text-lg font-semibold text-gray-800">Citations & References</h3>
+        <h3 className="text-lg font-semibold text-gray-800">Trích dẫn & Tài liệu tham khảo</h3>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

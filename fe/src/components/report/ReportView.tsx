@@ -9,62 +9,62 @@ import { MessageSquarePlus } from 'lucide-react';
 
 // Mock Data
 const MOCK_REPORT_DATA = {
-  title: "Comprehensive Analysis: Quantum Computing Innovations 2026",
-  status: "Finalized",
-  timestamp: "2026-04-25 09:15 AM",
+  title: "Phân tích Toàn diện: Đổi mới Máy tính Lượng tử 2026",
+  status: "Đã hoàn thành",
+  timestamp: "25/04/2026 09:15 Sáng",
   summaryTakeaways: [
-    "Quantum supremacy has reached a new milestone with 1024-qubit stable architectures.",
-    "Major investments from tech conglomerates are accelerating the transition from lab to enterprise.",
-    "Cryptographic vulnerabilities remain the primary risk factor for legacy systems by 2028."
+    "Ưu thế lượng tử đã đạt đến một cột mốc mới với kiến trúc ổn định 1024-qubit.",
+    "Các khoản đầu tư lớn từ các tập đoàn công nghệ đang đẩy nhanh quá trình chuyển đổi từ phòng thí nghiệm sang doanh nghiệp.",
+    "Các lỗ hổng mật mã vẫn là yếu tố rủi ro chính đối với các hệ thống cũ vào năm 2028."
   ],
   tabs: [
     {
       id: "analysis",
-      label: "In-depth Analysis",
+      label: "Phân tích Chuyên sâu",
       content: (
         <div className="space-y-4">
-          <p>The recent breakthroughs in quantum error correction have significantly lowered the barrier to commercial viability. Specifically, the topological qubit approach has yielded a 100x improvement in coherence times.</p>
-          <p>Furthermore, cloud-based quantum access models are democratizing the technology, allowing financial and pharmaceutical sectors to run complex simulations previously deemed impossible.</p>
-          <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-2">Market Projection</h3>
-          <p>The market is expected to grow at a CAGR of 32% over the next five years, driven largely by optimization problems in logistics and material science.</p>
+          <p>Những đột phá gần đây trong việc sửa lỗi lượng tử đã làm giảm đáng kể rào cản đối với khả năng thương mại hóa. Cụ thể, phương pháp qubit topo đã mang lại sự cải thiện gấp 100 lần về thời gian kết hợp.</p>
+          <p>Hơn nữa, các mô hình truy cập lượng tử dựa trên nền tảng đám mây đang dân chủ hóa công nghệ này, cho phép các lĩnh vực tài chính và dược phẩm chạy các mô phỏng phức tạp mà trước đây được coi là không thể.</p>
+          <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-2">Dự báo Thị trường</h3>
+          <p>Thị trường dự kiến sẽ tăng trưởng với tốc độ CAGR 32% trong 5 năm tới, chủ yếu nhờ vào các bài toán tối ưu hóa trong hậu cần và khoa học vật liệu.</p>
         </div>
       )
     },
     {
       id: "news",
-      label: "Recent News",
+      label: "Tin tức Gần đây",
       content: (
         <div className="space-y-4">
           <div className="p-4 border border-gray-100 rounded-lg bg-white">
-            <h4 className="font-semibold text-[#1e3a8a]">Startup Q-Core Secures Series C</h4>
-            <p className="text-sm text-gray-500 mt-1">Q-Core announced a $200M funding round to build scalable quantum processors for data centers. (Apr 24, 2026)</p>
+            <h4 className="font-semibold text-[#1e3a8a]">Công ty khởi nghiệp Q-Core Gọi vốn Series C thành công</h4>
+            <p className="text-sm text-gray-500 mt-1">Q-Core công bố vòng gọi vốn 200 triệu USD để chế tạo bộ xử lý lượng tử có thể mở rộng cho các trung tâm dữ liệu. (24/04/2026)</p>
           </div>
           <div className="p-4 border border-gray-100 rounded-lg bg-white">
-            <h4 className="font-semibold text-[#1e3a8a]">New Encryption Standard Proposed</h4>
-            <p className="text-sm text-gray-500 mt-1">The NIST has finalized its recommendations for post-quantum cryptographic algorithms to secure internet traffic. (Apr 20, 2026)</p>
+            <h4 className="font-semibold text-[#1e3a8a]">Tiêu chuẩn Mã hóa Mới được Đề xuất</h4>
+            <p className="text-sm text-gray-500 mt-1">NIST đã hoàn tất các đề xuất về thuật toán mã hóa hậu lượng tử để bảo mật lưu lượng truy cập internet. (20/04/2026)</p>
           </div>
         </div>
       )
     },
     {
       id: "risk",
-      label: "Risk Assessment",
+      label: "Đánh giá Rủi ro",
       content: (
         <div className="space-y-4">
-          <p>The primary risk involves the "Store Now, Decrypt Later" strategy employed by malicious actors. Enterprises must adopt post-quantum cryptography (PQC) immediately to protect long-term sensitive data.</p>
+          <p>Rủi ro chính liên quan đến chiến lược "Lưu trữ ngay, Giải mã sau" của các tác nhân độc hại. Các doanh nghiệp phải áp dụng mật mã hậu lượng tử (PQC) ngay lập tức để bảo vệ dữ liệu nhạy cảm trong dài hạn.</p>
           <ul className="list-disc pl-5 space-y-2 text-gray-700">
-            <li><strong>High Severity:</strong> Legacy financial records encryption.</li>
-            <li><strong>Medium Severity:</strong> Supply chain hardware shortages for specialized cooling systems.</li>
-            <li><strong>Low Severity:</strong> Immediate regulatory hurdles.</li>
+            <li><strong>Mức độ Nghiêm trọng Cao:</strong> Mã hóa hồ sơ tài chính cũ.</li>
+            <li><strong>Mức độ Nghiêm trọng Trung bình:</strong> Thiếu hụt phần cứng chuỗi cung ứng cho các hệ thống làm mát chuyên dụng.</li>
+            <li><strong>Mức độ Nghiêm trọng Thấp:</strong> Những trở ngại pháp lý trước mắt.</li>
           </ul>
         </div>
       )
     }
   ],
   citations: [
-    { id: "1", title: "State of Quantum Computing 2026", url: "https://example.com/quantum-2026" },
-    { id: "2", title: "NIST Post-Quantum Cryptography Standardization", url: "https://example.com/nist-pqc" },
-    { id: "3", title: "Global Market Insights: Quantum Tech", url: "https://example.com/market-insights" }
+    { id: "1", title: "Tình trạng Máy tính Lượng tử 2026", url: "https://example.com/quantum-2026" },
+    { id: "2", title: "Tiêu chuẩn hóa Mật mã Hậu Lượng tử NIST", url: "https://example.com/nist-pqc" },
+    { id: "3", title: "Thông tin chi tiết Thị trường Toàn cầu: Công nghệ Lượng tử", url: "https://example.com/market-insights" }
   ]
 };
 
@@ -99,7 +99,7 @@ export const ReportView = () => {
           <button
             onClick={() => setIsChatOpen(true)}
             className="fixed bottom-8 right-8 bg-[#1e3a8a] text-white p-4 rounded-full shadow-xl hover:bg-[#2e4a9a] transition-all hover:scale-105 z-50 flex items-center justify-center"
-            title="Ask Report Assistant"
+            title="Hỏi Trợ lý Báo cáo"
           >
             <MessageSquarePlus size={24} />
           </button>

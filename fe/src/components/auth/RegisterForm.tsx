@@ -20,7 +20,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode, onRegi
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setPasswordError("Passwords don't match");
+      setPasswordError("Mật khẩu không khớp");
       return;
     }
     setPasswordError('');
@@ -33,13 +33,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode, onRegi
   return (
     <div className="w-full max-w-md mx-auto p-8 bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/20">
       <div className="mb-8 text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Create an Account</h2>
-        <p className="text-gray-500 text-sm">Join InfoAgent and power up your research</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Tạo tài khoản</h2>
+        <p className="text-gray-500 text-sm">Tham gia InfoAgent và nâng tầm nghiên cứu của bạn</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
-          <label className="block text-sm font-medium text-gray-700">Full Name</label>
+          <label className="block text-sm font-medium text-gray-700">Họ và tên</label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <User className="h-5 w-5 text-gray-400" />
@@ -56,7 +56,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode, onRegi
         </div>
 
         <div className="space-y-1.5">
-          <label className="block text-sm font-medium text-gray-700">Email Address</label>
+          <label className="block text-sm font-medium text-gray-700">Địa chỉ Email</label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Mail className="h-5 w-5 text-gray-400" />
@@ -67,13 +67,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode, onRegi
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1e3a8a] focus:border-[#1e3a8a] sm:text-sm transition-colors"
-              placeholder="you@company.com"
+              placeholder="ban@congty.com"
             />
           </div>
         </div>
 
         <div className="space-y-1.5">
-          <label className="block text-sm font-medium text-gray-700">Password</label>
+          <label className="block text-sm font-medium text-gray-700">Mật khẩu</label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Lock className="h-5 w-5 text-gray-400" />
@@ -100,7 +100,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode, onRegi
         </div>
 
         <div className="space-y-1.5">
-          <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
+          <label className="block text-sm font-medium text-gray-700">Xác nhận Mật khẩu</label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Lock className="h-5 w-5 text-gray-400" />
@@ -133,7 +133,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode, onRegi
           type="submit"
           className="w-full flex justify-center py-2.5 px-4 mt-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#1e3a8a] hover:bg-[#2e4a9a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1e3a8a] transition-colors"
         >
-          Sign up
+          Đăng ký
         </button>
       </form>
 
@@ -143,7 +143,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode, onRegi
             <div className="w-full border-t border-gray-300" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">Or continue with</span>
+            <span className="px-2 bg-white text-gray-500">Hoặc tiếp tục với</span>
           </div>
         </div>
 
@@ -167,12 +167,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode, onRegi
       </div>
 
       <div className="mt-6 text-center text-sm">
-        <span className="text-gray-600">Already have an account? </span>
+        <span className="text-gray-600">Đã có tài khoản? </span>
         <button 
           onClick={onToggleMode}
           className="font-medium text-[#1e3a8a] hover:text-[#2e4a9a]"
         >
-          Sign in
+          Đăng nhập
         </button>
       </div>
     </div>

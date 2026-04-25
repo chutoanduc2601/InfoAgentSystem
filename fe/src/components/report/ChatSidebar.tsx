@@ -9,7 +9,7 @@ interface ChatSidebarProps {
 
 export const ChatSidebar = ({ isOpen, onClose }: ChatSidebarProps) => {
   const [messages, setMessages] = useState([
-    { id: 1, sender: 'agent', text: 'Hi! I can answer any questions you have about this specific report. What would you like to know?' }
+    { id: 1, sender: 'agent', text: 'Xin chào! Tôi có thể trả lời bất kỳ câu hỏi nào của bạn về báo cáo cụ thể này. Bạn muốn biết điều gì?' }
   ]);
   const [inputValue, setInputValue] = useState('');
 
@@ -26,7 +26,7 @@ export const ChatSidebar = ({ isOpen, onClose }: ChatSidebarProps) => {
       setMessages(prev => [...prev, { 
         id: Date.now(), 
         sender: 'agent', 
-        text: 'Based on the report context, the risk factors are primarily associated with supply chain disruptions as noted in section 3.' 
+        text: 'Dựa trên ngữ cảnh của báo cáo, các yếu tố rủi ro chủ yếu liên quan đến sự gián đoạn chuỗi cung ứng như được lưu ý trong phần 3.' 
       }]);
     }, 1000);
   };
@@ -45,7 +45,7 @@ export const ChatSidebar = ({ isOpen, onClose }: ChatSidebarProps) => {
           <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-[#f8fafc]">
             <div className="flex items-center space-x-2">
               <MessageSquare size={18} className="text-[#1e3a8a]" />
-              <h3 className="font-semibold text-gray-800">Report Assistant</h3>
+              <h3 className="font-semibold text-gray-800">Trợ lý Báo cáo</h3>
             </div>
             <button 
               onClick={onClose}
@@ -85,7 +85,7 @@ export const ChatSidebar = ({ isOpen, onClose }: ChatSidebarProps) => {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="Ask about this report..."
+                placeholder="Hỏi về báo cáo này..."
                 className="flex-1 bg-transparent border-none focus:ring-0 text-sm py-2 px-2 text-gray-700 placeholder-gray-400"
               />
               <button 
@@ -99,7 +99,7 @@ export const ChatSidebar = ({ isOpen, onClose }: ChatSidebarProps) => {
               </button>
             </div>
             <p className="text-center text-xs text-gray-400 mt-2">
-              Context-aware assistant
+              Trợ lý nhận diện ngữ cảnh
             </p>
           </div>
         </motion.div>

@@ -3,32 +3,32 @@ import { Lightbulb, Database, Activity, Lock, Network } from 'lucide-react';
 
 const recommendations = [
   {
-    title: 'System Architecture',
-    description: 'Explore the latest blueprints for scalable multi-agent frameworks.',
+    title: 'Kiến trúc Hệ thống',
+    description: 'Khám phá các bản thiết kế mới nhất cho framework đa tác nhân có thể mở rộng.',
     icon: Network,
     color: 'from-blue-500 to-indigo-500',
     bgColor: 'bg-blue-50',
     iconColor: 'text-blue-600'
   },
   {
-    title: 'Data Privacy',
-    description: 'Understand how InfoAgent handles your data securely.',
+    title: 'Bảo mật Dữ liệu',
+    description: 'Hiểu cách InfoAgent xử lý dữ liệu của bạn một cách an toàn.',
     icon: Lock,
     color: 'from-emerald-500 to-teal-500',
     bgColor: 'bg-emerald-50',
     iconColor: 'text-emerald-600'
   },
   {
-    title: 'Model Performance',
-    description: 'Real-time metrics on language model latency and accuracy.',
+    title: 'Hiệu suất Mô hình',
+    description: 'Các chỉ số thời gian thực về độ trễ và độ chính xác của mô hình ngôn ngữ.',
     icon: Activity,
     color: 'from-purple-500 to-fuchsia-500',
     bgColor: 'bg-purple-50',
     iconColor: 'text-purple-600'
   },
   {
-    title: 'Knowledge Base',
-    description: 'Dive into the unified vector database and document retrieval.',
+    title: 'Cơ sở Tri thức',
+    description: 'Đi sâu vào cơ sở dữ liệu vector hợp nhất và truy xuất tài liệu.',
     icon: Database,
     color: 'from-amber-500 to-orange-500',
     bgColor: 'bg-amber-50',
@@ -56,7 +56,7 @@ export const RecommendationSection = () => {
     <div className="w-full max-w-5xl mx-auto mt-16 mb-8">
       <div className="flex items-center mb-6">
         <Lightbulb className="text-amber-500 mr-2" size={24} />
-        <h3 className="text-xl font-bold text-gray-800 tracking-tight">Recommended Topics</h3>
+        <h3 className="text-xl font-bold text-gray-800 tracking-tight">Chủ đề Đề xuất</h3>
       </div>
       
       <motion.div 

@@ -3,11 +3,11 @@ import { motion } from 'framer-motion';
 import { BrainCircuit, Globe, Cpu, CheckCircle2, FileText, Check } from 'lucide-react';
 
 const steps = [
-  { id: 'orchestrator', label: 'Orchestrator', icon: BrainCircuit },
-  { id: 'search', label: 'Search', icon: Globe },
-  { id: 'processing', label: 'Processing', icon: Cpu },
-  { id: 'verification', label: 'Verification', icon: CheckCircle2 },
-  { id: 'summary', label: 'Summary', icon: FileText }
+  { id: 'orchestrator', label: 'Điều phối', icon: BrainCircuit },
+  { id: 'search', label: 'Tìm kiếm', icon: Globe },
+  { id: 'processing', label: 'Xử lý', icon: Cpu },
+  { id: 'verification', label: 'Xác thực', icon: CheckCircle2 },
+  { id: 'summary', label: 'Tóm tắt', icon: FileText }
 ];
 
 // Mocking the active step (e.g., currently searching)
@@ -18,7 +18,7 @@ export const AgentPipeline = () => {
     <div className="w-full max-w-5xl mx-auto my-12 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
       <h2 className="text-lg font-semibold text-gray-800 mb-8 flex items-center">
         <BrainCircuit className="mr-2 text-blue-600" size={20} />
-        Agent Pipeline Status
+        Trạng thái Luồng Agent
       </h2>
 
       <div className="relative flex items-center justify-between w-full">
@@ -79,7 +79,7 @@ export const AgentPipeline = () => {
                   animate={{ opacity: [0.5, 1, 0.5] }}
                   transition={{ repeat: Infinity, duration: 2 }}
                 >
-                  Processing...
+                  Đang xử lý...
                 </motion.span>
               )}
             </div>

@@ -12,7 +12,7 @@ export const ReportSummary = ({ takeaways }: ReportSummaryProps) => {
       
       <div className="flex items-center mb-4">
         <Sparkles size={20} className="text-[#1e3a8a] mr-2" />
-        <h2 className="text-xl font-semibold text-[#1e3a8a]">Executive Summary</h2>
+        <h2 className="text-xl font-semibold text-[#1e3a8a]">Tóm tắt Nội dung</h2>
       </div>
       
       <ul className="space-y-3">
