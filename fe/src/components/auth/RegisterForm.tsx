@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, User } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, User, Loader2 } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 
 interface RegisterFormProps {
   onToggleMode: () => void;
@@ -16,17 +17,41 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode, onRegi
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const [passwordError, setPasswordError] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setPasswordError("Mật khẩu không khớp");
       return;
     }
     setPasswordError('');
-    if (name && email && password) {
-      // Mock successful registration
-      onRegisterSuccess();
+    setErrorMsg('');
+    setSuccessMsg('');
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+          }
+        }
+      });
+
+      if (error) {
+        setErrorMsg(error.message);
+      } else {
+        setSuccessMsg('Đăng ký thành công! Vui lòng kiểm tra email của bạn để xác nhận.');
+      }
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Đã có lỗi xảy ra');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -36,6 +61,18 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode, onRegi
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Tạo tài khoản</h2>
         <p className="text-gray-500 text-sm">Tham gia InfoAgent và nâng tầm nghiên cứu của bạn</p>
       </div>
+
+      {errorMsg && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm text-center">
+          {errorMsg}
+        </div>
+      )}
+      
+      {successMsg && (
+        <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg text-sm text-center">
+          {successMsg}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
@@ -131,9 +168,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode, onRegi
 
         <button
           type="submit"
-          className="w-full flex justify-center py-2.5 px-4 mt-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#1e3a8a] hover:bg-[#2e4a9a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1e3a8a] transition-colors"
+          disabled={isLoading}
+          className="w-full flex justify-center py-2.5 px-4 mt-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#1e3a8a] hover:bg-[#2e4a9a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1e3a8a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Đăng ký
+          {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Đăng ký'}
         </button>
       </form>
 

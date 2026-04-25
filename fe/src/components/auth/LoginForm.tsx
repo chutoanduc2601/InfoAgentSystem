@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 
 interface LoginFormProps {
   onToggleMode: () => void;
@@ -11,11 +12,30 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, onLoginSucce
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email && password) {
-      // Mock successful login
-      onLoginSuccess();
+      setIsLoading(true);
+      setErrorMsg('');
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) {
+          setErrorMsg(error.message);
+        } else {
+          onLoginSuccess();
+        }
+      } catch (err: any) {
+        setErrorMsg(err.message || 'Đã có lỗi xảy ra');
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -25,6 +45,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, onLoginSucce
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Chào mừng trở lại</h2>
         <p className="text-gray-500 text-sm">Đăng nhập để truy cập bảng điều khiển thông minh của bạn</p>
       </div>
+
+      {errorMsg && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm text-center">
+          {errorMsg}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-1.5">
@@ -90,9 +116,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, onLoginSucce
 
         <button
           type="submit"
-          className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#1e3a8a] hover:bg-[#2e4a9a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1e3a8a] transition-colors"
+          disabled={isLoading}
+          className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#1e3a8a] hover:bg-[#2e4a9a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1e3a8a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Đăng nhập
+          {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Đăng nhập'}
         </button>
       </form>
 
