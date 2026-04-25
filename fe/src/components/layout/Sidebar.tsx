@@ -8,7 +8,8 @@ import {
   Settings, 
   ChevronLeft, 
   ChevronRight, 
-  User 
+  User,
+  LogOut
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -108,7 +109,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
       </div>
 
       {/* User Profile */}
-      <div className="p-4 border-t border-[#2a4590]">
+      <div className="p-4 border-t border-[#2a4590] relative">
         <button 
           className={`flex items-center w-full p-2 rounded-lg hover:bg-[#2a4590] transition-colors ${
             isCollapsed ? 'justify-center' : ''
@@ -124,6 +125,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
             </div>
           )}
         </button>
+
         <button 
           className={`flex items-center w-full p-2 mt-1 rounded-lg hover:bg-[#2a4590] transition-colors ${
             isCollapsed ? 'justify-center' : ''
@@ -132,6 +134,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
         >
           <Settings size={20} className="text-gray-400 shrink-0" />
           {!isCollapsed && <span className="ml-3 text-sm text-gray-200">Cài đặt</span>}
+        </button>
+
+        <button 
+          onClick={async () => {
+            await supabase.auth.signOut();
+          }}
+          className={`flex items-center w-full p-2 mt-1 rounded-lg hover:bg-red-500/20 text-red-300 transition-colors ${
+            isCollapsed ? 'justify-center' : ''
+          }`}
+          title="Đăng xuất"
+        >
+          <LogOut size={20} className="shrink-0" />
+          {!isCollapsed && <span className="ml-3 text-sm font-medium">Đăng xuất</span>}
         </button>
       </div>
     </aside>
