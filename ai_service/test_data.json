@@ -1,0 +1,17 @@
+[
+  {
+    "source": "CoinDesk",
+    "url": "https://www.coindesk.com/price/bitcoin",
+    "content": "Giá Bitcoin (BTC) hiện tại đang giao dịch quanh mức 62,500 USD, ghi nhận mức tăng 2.5% trong 24 giờ qua. Sự gia tăng này được thúc đẩy bởi dòng tiền đổ vào các quỹ ETF Bitcoin giao ngay tại thị trường Mỹ."
+  },
+  {
+    "source": "Bloomberg",
+    "url": "https://www.bloomberg.com/crypto",
+    "content": "Thị trường tiền mã hóa đang cho thấy dấu hiệu khởi sắc. Tuy nhiên, các chuyên gia cảnh báo rằng sự biến động vẫn còn cao. Ngân hàng trung ương Mỹ (FED) có thể giữ nguyên lãi suất, điều này có thể gây áp lực lên các tài sản rủi ro như Bitcoin trong ngắn hạn."
+  },
+  {
+    "source": "Reddit (r/CryptoCurrency)",
+    "url": "https://reddit.com/r/CryptoCurrency/btc_crash",
+    "content": "Tôi nghĩ Bitcoin sắp sập mạnh về 50,000 USD vì phe gấu đang xả hàng. Đừng mua lúc này, quá rủi ro! Cá mập đang thao túng giá đấy."
+  }
+]
