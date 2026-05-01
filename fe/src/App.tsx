@@ -5,6 +5,7 @@ import { SearchDashboard } from './components/dashboard/SearchDashboard';
 import { ReportView } from './components/report/ReportView';
 import { AuthPage } from './pages/AuthPage';
 import { supabase } from './lib/supabase';
+import { QueryProvider } from './context/QueryContext';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -14,6 +15,9 @@ function App() {
     // Check active sessions and sets the user
     supabase.auth.getSession().then(({ data: { session } }) => {
       setIsAuthenticated(!!session);
+      setIsInitializing(false);
+    }).catch(() => {
+      // Even if session check fails (e.g. invalid config), stop initializing
       setIsInitializing(false);
     });
 
@@ -30,20 +34,22 @@ function App() {
   }
 
   return (
-    <Routes>
-      <Route 
-        path="/auth" 
-        element={!isAuthenticated ? <AuthPage onAuthSuccess={() => setIsAuthenticated(true)} /> : <Navigate to="/" replace />} 
-      />
-      <Route 
-        path="/" 
-        element={isAuthenticated ? <MainLayout><SearchDashboard /></MainLayout> : <Navigate to="/auth" replace />} 
-      />
-      <Route 
-        path="/report" 
-        element={isAuthenticated ? <MainLayout><ReportView /></MainLayout> : <Navigate to="/auth" replace />} 
-      />
-    </Routes>
+    <QueryProvider>
+      <Routes>
+        <Route 
+          path="/auth" 
+          element={!isAuthenticated ? <AuthPage onAuthSuccess={() => setIsAuthenticated(true)} /> : <Navigate to="/" replace />} 
+        />
+        <Route 
+          path="/" 
+          element={isAuthenticated ? <MainLayout><SearchDashboard /></MainLayout> : <Navigate to="/auth" replace />} 
+        />
+        <Route 
+          path="/report" 
+          element={isAuthenticated ? <MainLayout><ReportView /></MainLayout> : <Navigate to="/auth" replace />} 
+        />
+      </Routes>
+    </QueryProvider>
   );
 }
 
