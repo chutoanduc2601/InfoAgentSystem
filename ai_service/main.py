@@ -5,6 +5,9 @@ from openai import OpenAI
 import json
 import os
 from dotenv import load_dotenv
+from agents.search_agent import search
+from agents.process_agent import process
+from agents.orchestrator_agent import orchestrate
 
 # Load environment variables (API Key)
 load_dotenv()
@@ -99,39 +102,70 @@ def process_data_with_llm(user_query: str, raw_data_str: str) -> str:
 # =====================================================================
 # 3. API Endpoints
 # =====================================================================
+# @app.post("/ai/generate-report", response_model=ReportResponse)
+# async def generate_report(request: QueryRequest):
+#     print(f"Nhận request từ Spring Boot cho câu hỏi: {request.query}")
+
+#     # BƯỚC 1: LẤY DỮ LIỆU CỦA NGƯỜI B (Mock Data - Người C không cần đợi B code xong)
+#     try:
+#         # Đường dẫn file json test cùng thư mục
+#         file_path = os.path.join(os.path.dirname(__file__), 'test_data.json')
+#         with open(file_path, 'r', encoding='utf-8') as f:
+#             raw_data = json.load(f)
+#             raw_data_str = json.dumps(raw_data, ensure_ascii=False)
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail="Không tìm thấy file test_data.json của Người B")
+
+#     # BƯỚC 2: NGƯỜI C XỬ LÝ (Verification, Summary, Report)
+#     print("Đang gửi dữ liệu cho LLM xử lý (Người C đang làm việc)...")
+#     llm_json_result = process_data_with_llm(request.query, raw_data_str)
+
+#     # BƯỚC 3: PARSE JSON VÀ TRẢ VỀ CHO NGƯỜI A (Spring Boot)
+#     try:
+#         result_dict = json.loads(llm_json_result)
+
+#         return ReportResponse(
+#             status="success",
+#             query=request.query,
+#             confidence_label=result_dict.get("confidence_label", "Unknown"),
+#             quick_summary=result_dict.get("quick_summary", []),
+#             detailed_report=result_dict.get("detailed_report", ""),
+#             sources=result_dict.get("sources", []),
+#             recommendations=result_dict.get("recommendations", [])
+#         )
+#     except json.JSONDecodeError:
+#         raise HTTPException(status_code=500, detail="LLM trả về kết quả không phải là chuẩn JSON")
+
 @app.post("/ai/generate-report", response_model=ReportResponse)
 async def generate_report(request: QueryRequest):
-    print(f"Nhận request từ Spring Boot cho câu hỏi: {request.query}")
 
-    # BƯỚC 1: LẤY DỮ LIỆU CỦA NGƯỜI B (Mock Data - Người C không cần đợi B code xong)
-    try:
-        # Đường dẫn file json test cùng thư mục
-        file_path = os.path.join(os.path.dirname(__file__), 'test_data.json')
-        with open(file_path, 'r', encoding='utf-8') as f:
-            raw_data = json.load(f)
-            raw_data_str = json.dumps(raw_data, ensure_ascii=False)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Không tìm thấy file test_data.json của Người B")
+    # STEP 0: ORCHESTRATOR
+    plan = await orchestrate(request.query)
 
-    # BƯỚC 2: NGƯỜI C XỬ LÝ (Verification, Summary, Report)
-    print("Đang gửi dữ liệu cho LLM xử lý (Người C đang làm việc)...")
+    # STEP 1: SEARCH (có điều kiện)
+    if plan["needs_search"]:
+        search_results = await search(plan["keywords"], plan["search_depth"])
+    else:
+        search_results = []
+
+    # STEP 2: PROCESS
+    processed_data = await process(search_results)
+
+    # STEP 3: LLM
+    raw_data_str = json.dumps(processed_data, ensure_ascii=False)
     llm_json_result = process_data_with_llm(request.query, raw_data_str)
 
-    # BƯỚC 3: PARSE JSON VÀ TRẢ VỀ CHO NGƯỜI A (Spring Boot)
-    try:
-        result_dict = json.loads(llm_json_result)
+    result_dict = json.loads(llm_json_result)
 
-        return ReportResponse(
-            status="success",
-            query=request.query,
-            confidence_label=result_dict.get("confidence_label", "Unknown"),
-            quick_summary=result_dict.get("quick_summary", []),
-            detailed_report=result_dict.get("detailed_report", ""),
-            sources=result_dict.get("sources", []),
-            recommendations=result_dict.get("recommendations", [])
-        )
-    except json.JSONDecodeError:
-        raise HTTPException(status_code=500, detail="LLM trả về kết quả không phải là chuẩn JSON")
-
+    return ReportResponse(
+        status="success",
+        query=request.query,
+        confidence_label=result_dict.get("confidence_label", "Unknown"),
+        quick_summary=result_dict.get("quick_summary", []),
+        detailed_report=result_dict.get("detailed_report", ""),
+        sources=result_dict.get("sources", []),
+        recommendations=result_dict.get("recommendations", [])
+    )
+    
 # Để chạy Server: Mở terminal chạy lệnh
 # uvicorn main:app --reload --port 8000
