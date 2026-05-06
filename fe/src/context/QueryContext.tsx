@@ -35,7 +35,7 @@ export const QueryProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       }
 
       const result = await queryService.submitQuery(text);
-      setReport(result);
+      setReport(result.data);
       setCurrentStep(5); // Complete
     } catch (err: any) {
       setError(err.message || 'Đã xảy ra lỗi không xác định');
