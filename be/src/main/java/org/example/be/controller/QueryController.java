@@ -18,23 +18,6 @@ public class QueryController {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    // @PostMapping("/query")
-    // public ResponseEntity<?> forwardQuery(@RequestBody Map<String, Object> payload) {
-    //     try {
-    //         // Forward request to AI Service (FastAPI)
-    //         // Add a mock query_id since FastAPI expects it
-    //         payload.putIfAbsent("query_id", 1);
-            
-    //         String targetUrl = aiServiceUrl + "/ai/generate-report";
-    //         Object response = restTemplate.postForObject(targetUrl, payload, Object.class);
-    //         return ResponseEntity.ok(response);
-    //     } catch (Exception e) {
-    //         return ResponseEntity.status(500).body(Map.of(
-    //             "error", "Không thể kết nối tới AI Service: " + e.getMessage()
-    //         ));
-    //     }
-    // }
-
     @PostMapping("/query")
     public ResponseEntity<?> handleQuery(@RequestBody QueryRequest request) {
 

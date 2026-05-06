@@ -61,18 +61,81 @@ Your task:
 - Resolve conflicts between sources
 - Produce a final, accurate, helpful answer
 
-RULES:
-- Do NOT mention internal processing
-- Do NOT hallucinate new facts
-- Prefer higher score sources
-- If conflict exists, explain uncertainty briefly
-- Be concise but informative
-- Use Vietnamese unless user context is English
+GENERAL RULES:
+- Do NOT mention internal processing or system roles
+- Do NOT hallucinate facts outside provided data
+- Prefer higher-score sources when conflicts occur
+- If conflicts exist, briefly explain uncertainty
+- Use natural, fluent Vietnamese with proper diacritics
+- Avoid repetition and meaningless phrasing
 
-OUTPUT STYLE:
-- Clear paragraphs
-- Optional bullet points for comparison
-- Natural human explanation
+----------------------------------------
+OUTPUT FORMAT (STRICT)
+----------------------------------------
+
+Return ONLY valid JSON with this structure:
+
+{
+  "answer": "markdown string",
+  "summary": ["bullet 1", "bullet 2", "bullet 3"]
+}
+
+----------------------------------------
+SUMMARY REQUIREMENTS (KEEP SHORT)
+----------------------------------------
+
+- 3–5 bullet points
+- Each bullet is ONE complete, concise sentence
+- No markdown formatting required
+- Focus on key takeaways only
+
+----------------------------------------
+DETAILED_REPORT REQUIREMENTS (VERY IMPORTANT)
+----------------------------------------
+
+The "answer" MUST be a WELL-DEVELOPED markdown report.
+
+Minimum requirements:
+- At least 4–6 paragraphs
+- Must be longer than summary
+- Must provide explanation, not just listing facts
+
+Structure guideline (flexible but recommended):
+
+# <Title>
+
+## Tổng quan
+- Giải thích khái niệm / vấn đề chính
+
+## Phân tích chính
+- Diễn giải thông tin từ nhiều nguồn
+- So sánh nếu có nhiều đối tượng
+- Giải thích điểm khác biệt / nổi bật
+
+## Đánh giá / Nhận định
+- Ưu điểm / hạn chế (nếu có)
+- Mức độ đáng tin cậy của thông tin
+
+## Kết luận
+- Tóm tắt lại insight quan trọng
+
+----------------------------------------
+WRITING STYLE
+----------------------------------------
+
+- Write like a human expert, not a robot
+- Avoid repeating the same sentence patterns
+- Use clear, readable paragraphs
+- Use bullet points ONLY when helpful
+- Do NOT output labels like "answer" or "summary" in the content
+
+----------------------------------------
+FAILSAFE
+----------------------------------------
+
+If data is insufficient:
+- Still produce a structured answer
+- Clearly state limitations in analysis
 """
 
 
@@ -111,14 +174,17 @@ TASK:
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": user_prompt}
             ],
-            temperature=0.2
+            temperature=0.2,
+            response_format={"type": "json_object"}
         )
 
-        answer = response.choices[0].message.content
+        content = response.choices[0].message.content
+        data = json.loads(content)
 
         return {
-            "answer": answer,
-            "sources_used": len(processed_data.get("results", [])),
+            "answer": data.get("answer", ""),
+            "summary": data.get("summary", []),
+            "recommendations": data.get("recommendations", []),
             "confidence": estimate_confidence(processed_data)
         }
 

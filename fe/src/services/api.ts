@@ -17,11 +17,13 @@ export const queryService = {
       body: JSON.stringify({ query: text }),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || `Lỗi hệ thống: ${response.status}`);
-    }
+    const data = await response.json().catch(() => ({}));
 
-    return response.json();
+    // if (!response.ok) {
+    //   const errorData = await response.json().catch(() => ({}));
+    //   throw new Error(errorData.error || `Lỗi hệ thống: ${response.status}`);
+    // }
+
+    return data;
   }
 };
