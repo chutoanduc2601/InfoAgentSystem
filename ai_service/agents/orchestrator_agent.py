@@ -13,11 +13,17 @@ _client: Optional[AsyncOpenAI] = None
 def get_client() -> Optional[AsyncOpenAI]:
     global _client
     if _client is None:
-        api_key = os.getenv("OPENAI_API_KEY")
+        # Ưu tiên lấy Groq Key nếu có
+        api_key = os.getenv("GROQ_API_KEY") or os.getenv("OPENAI_API_KEY")
         base_url = os.getenv("GROQ_BASE_URL")
+        
         if not api_key:
             return None
-        _client = AsyncOpenAI(api_key=api_key, base_url=base_url) if base_url else AsyncOpenAI(api_key=api_key)
+            
+        if base_url:
+            _client = AsyncOpenAI(api_key=api_key, base_url=base_url)
+        else:
+            _client = AsyncOpenAI(api_key=api_key)
     return _client
 
 class Orchestrator:
@@ -91,11 +97,11 @@ async def orchestrate(query: str) -> Dict[str, Any]:
 QUY TẮC: CHỈ trả JSON, không giải thích.
 FORMAT: {"intent": "fact" | "compare" | "recommendation", "keywords": ["keyword1", "keyword2"]}"""
 
-    model = "llama-3.1-8b-instant" if os.getenv("GROQ_BASE_URL") else "gpt-4o-mini"
+    model = "llama-3.1-8b-instant"
 
     try:
         response = await call_llm(client, {
-            "model": model,
+            "model": "llama-3.1-8b-instant",
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": query}

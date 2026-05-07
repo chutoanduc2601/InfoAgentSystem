@@ -8,13 +8,17 @@ from openai import AsyncOpenAI
 # CLIENT
 # =========================
 def get_client():
-    api_key = os.getenv("OPENAI_API_KEY")
+    # Ưu tiên lấy Groq Key nếu có
+    api_key = os.getenv("GROQ_API_KEY") or os.getenv("OPENAI_API_KEY")
     base_url = os.getenv("GROQ_BASE_URL")
 
     if not api_key:
         return None
 
-    return AsyncOpenAI(api_key=api_key, base_url=base_url) if base_url else AsyncOpenAI(api_key=api_key)
+    if base_url:
+        return AsyncOpenAI(api_key=api_key, base_url=base_url)
+    else:
+        return AsyncOpenAI(api_key=api_key)
 
 
 client = get_client()
