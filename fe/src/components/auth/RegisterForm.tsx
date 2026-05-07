@@ -33,7 +33,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode, onRegi
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -47,6 +47,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode, onRegi
         setErrorMsg(error.message);
       } else {
         setSuccessMsg('Đăng ký thành công! Vui lòng kiểm tra email của bạn để xác nhận.');
+        // Gọi callback thành công sau một khoảng thời gian ngắn
+        setTimeout(() => {
+          onRegisterSuccess();
+        }, 3000);
       }
     } catch (err: any) {
       setErrorMsg(err.message || 'Đã có lỗi xảy ra');
@@ -207,6 +211,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode, onRegi
       <div className="mt-6 text-center text-sm">
         <span className="text-gray-600">Đã có tài khoản? </span>
         <button 
+          type="button"
           onClick={onToggleMode}
           className="font-medium text-[#1e3a8a] hover:text-[#2e4a9a]"
         >

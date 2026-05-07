@@ -1,9 +1,9 @@
 import { ExternalLink, BookOpen } from 'lucide-react';
 
 export type Citation = {
-  id: string;
   title: string;
   url: string;
+  id?: string;
 };
 
 interface ReportCitationsProps {
@@ -23,7 +23,7 @@ export const ReportCitations = ({ citations }: ReportCitationsProps) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {citations.map((citation, index) => (
           <a
-            key={citation.id}
+            key={index}
             href={citation.url}
             target="_blank"
             rel="noopener noreferrer"
@@ -34,7 +34,7 @@ export const ReportCitations = ({ citations }: ReportCitationsProps) => {
             </span>
             <div className="flex-1">
               <h4 className="text-sm font-medium text-gray-800 group-hover:text-[#1e3a8a] transition-colors line-clamp-2">
-                {citation.title}
+                {citation.title || citation.url}
               </h4>
               <p className="text-xs text-gray-500 mt-1 truncate">
                 {new URL(citation.url).hostname}

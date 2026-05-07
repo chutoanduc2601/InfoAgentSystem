@@ -4,7 +4,11 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Optional, Dict, Any, List
 from dotenv import load_dotenv
-load_dotenv()
+import os
+
+# Ép nạp file .env từ thư mục hiện tại của file main.py
+env_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv(dotenv_path=env_path)
 
 # Agents
 from agents.orchestrator_agent import orchestrate

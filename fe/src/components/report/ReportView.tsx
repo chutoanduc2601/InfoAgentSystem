@@ -1,5 +1,8 @@
 import { useState } from "react";
+import { Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import ReactMarkdown from "react-markdown";
 import { ReportHeader } from "./ReportHeader";
 import { ReportSummary } from "./ReportSummary";
 import { ReportCitations } from "./ReportCitations";
@@ -8,15 +11,12 @@ import {
   MessageSquarePlus,
   Loader2,
   AlertTriangle,
-  ArrowLeft,
 } from "lucide-react";
 import { useQueryContext } from "../../context/QueryContext";
-import { Link } from "react-router-dom";
-import ReactMarkdown from "react-markdown";
 
 export const ReportView = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const { report, isLoading, error, query } = useQueryContext();
+  const { report, isLoading, error, query, queryTimestamp } = useQueryContext();
 
   if (isLoading) {
     return (
@@ -52,25 +52,47 @@ export const ReportView = () => {
 
   if (!report) return <Navigate to="/" />;
 
+  const displayTimestamp = queryTimestamp
+    ? new Date(queryTimestamp).toLocaleString("vi-VN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : new Date().toLocaleString("vi-VN");
+
   return (
     <div className="flex h-full w-full overflow-hidden bg-white">
       <div className="flex-1 overflow-y-auto px-8 py-10">
+        {/* Floating Chat Toggle Button */}
+        <div className="fixed bottom-6 right-6 z-50">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsChatOpen(!isChatOpen)}
+            className="flex items-center gap-2 px-4 py-3 bg-[#1e3a8a] text-white rounded-2xl shadow-lg hover:bg-[#2e4a9a] transition-colors"
+          >
+            <MessageSquarePlus size={20} />
+            <span className="text-sm font-medium">Hỏi thêm</span>
+          </motion.button>
+        </div>
+
         <ReportHeader
-          title={report.query}
+          title={query}
           status={report.confidence_label}
-          timestamp={new Date().toLocaleString()}
+          timestamp={displayTimestamp}
         />
         <ReportSummary takeaways={report.quick_summary} />
 
         <div className="mt-8">
           <h3 className="text-lg font-semibold mb-4">Phân tích Chi tiết</h3>
           <div className="prose max-w-none bg-gray-50 rounded-xl p-6 border border-gray-100">
-            {/* {report.detailed_report} */}
             <ReactMarkdown>{report.detailed_report}</ReactMarkdown>
           </div>
         </div>
 
-        {report.recommendations.length > 0 && (
+        {report.recommendations && report.recommendations.length > 0 && (
           <div className="mt-8">
             <h3 className="text-lg font-semibold mb-4">Gợi ý</h3>
             <div className="flex flex-wrap gap-2">
@@ -85,9 +107,15 @@ export const ReportView = () => {
             </div>
           </div>
         )}
+
+        {report.sources && report.sources.length > 0 && (
+          <div className="mt-8">
+            <ReportCitations citations={report.sources as any} />
+          </div>
+        )}
       </div>
+
       <ChatSidebar isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </div>
   );
 };
-import { Navigate } from "react-router-dom";
