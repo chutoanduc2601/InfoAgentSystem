@@ -4,6 +4,7 @@ import { MainLayout } from './components/layout/MainLayout';
 import { SearchDashboard } from './components/dashboard/SearchDashboard';
 import { ReportView } from './components/report/ReportView';
 import { AuthPage } from './pages/AuthPage';
+import { ResetPasswordForm } from './components/auth/ResetPasswordForm';
 import { supabase } from './lib/supabase';
 import { QueryProvider } from './context/QueryContext';
 
@@ -36,17 +37,26 @@ function App() {
   return (
     <QueryProvider>
       <Routes>
+        {/* Auth page — nếu đã login thì redirect về trang chính */}
         <Route 
           path="/auth" 
           element={!isAuthenticated ? <AuthPage onAuthSuccess={() => setIsAuthenticated(true)} /> : <Navigate to="/" replace />} 
         />
+
+        {/* Reset password — luôn accessible (Supabase set session tạm từ token) */}
+        <Route
+          path="/auth/reset-password"
+          element={<ResetPasswordForm />}
+        />
+
+        {/* Trang chính — cho phép cả khách lẫn user đã đăng nhập */}
         <Route 
           path="/" 
-          element={isAuthenticated ? <MainLayout><SearchDashboard /></MainLayout> : <Navigate to="/auth" replace />} 
+          element={<MainLayout><SearchDashboard /></MainLayout>} 
         />
         <Route 
           path="/report" 
-          element={isAuthenticated ? <MainLayout><ReportView /></MainLayout> : <Navigate to="/auth" replace />} 
+          element={<MainLayout><ReportView /></MainLayout>} 
         />
       </Routes>
     </QueryProvider>
