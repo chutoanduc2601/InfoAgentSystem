@@ -37,14 +37,19 @@ public class QueryController {
             );
         }
 
+        boolean isGuest = request.getUserId() == null || request.getUserId().isBlank();
+
         // =========================
-        // 2. TẠO QUERY RECORD (trạng thái: processing)
+        // 2. TẠO QUERY RECORD (chỉ khi có userId — bỏ qua cho khách)
         // =========================
-        QueryRecord queryRecord = historyService.createQuery(
-            request.getUserId(),
-            request.getQuery()
-        );
-        String queryId = queryRecord.getId();
+        String queryId = null;
+        if (!isGuest) {
+            QueryRecord queryRecord = historyService.createQuery(
+                request.getUserId(),
+                request.getQuery()
+            );
+            queryId = queryRecord.getId();
+        }
 
         try {
             // =========================
@@ -67,21 +72,27 @@ public class QueryController {
             Map<String, Object> aiBody = response.getBody();
 
             // =========================
-            // 5. LƯU BÁO CÁO VÀO DB
+            // 5. LƯU BÁO CÁO VÀO DB (chỉ khi có userId)
             // =========================
-            historyService.saveReport(queryId, aiBody);
+            if (!isGuest && queryId != null) {
+                historyService.saveReport(queryId, aiBody);
+            }
 
             // =========================
             // 6. TRẢ VỀ CHO FE
             // =========================
-            return ResponseEntity.ok(Map.of(
-                "success", true,
-                "queryId", queryId,
-                "data",    aiBody
-            ));
+            Map<String, Object> result = new HashMap<>();
+            result.put("success", true);
+            result.put("data", aiBody);
+            if (queryId != null) {
+                result.put("queryId", queryId);
+            }
+            return ResponseEntity.ok(result);
 
         } catch (Exception e) {
-            historyService.markError(queryId);
+            if (!isGuest && queryId != null) {
+                historyService.markError(queryId);
+            }
             return ResponseEntity.status(500).body(Map.of(
                 "success", false,
                 "error",   "AI Service error: " + e.getMessage()

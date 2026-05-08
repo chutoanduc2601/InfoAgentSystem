@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, Shield, Zap, Workflow } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { LoginForm } from '../components/auth/LoginForm';
 import { RegisterForm } from '../components/auth/RegisterForm';
+import { ForgotPasswordForm } from '../components/auth/ForgotPasswordForm';
 
 interface AuthPageProps {
   onAuthSuccess: () => void;
 }
 
 export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
-  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [mode, setMode] = useState<'login' | 'register' | 'forgot'>('login');
+  const navigate = useNavigate();
 
   const toggleMode = () => {
     setMode(prev => prev === 'login' ? 'register' : 'login');
@@ -82,7 +85,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
 
         <div className="w-full max-w-md relative">
           <AnimatePresence mode="wait">
-            {mode === 'login' ? (
+            {mode === 'login' && (
               <motion.div
                 key="login"
                 initial={{ opacity: 0, x: -20 }}
@@ -90,9 +93,14 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
               >
-                <LoginForm onToggleMode={toggleMode} onLoginSuccess={onAuthSuccess} />
+                <LoginForm
+                  onToggleMode={toggleMode}
+                  onLoginSuccess={onAuthSuccess}
+                  onForgotPassword={() => setMode('forgot')}
+                />
               </motion.div>
-            ) : (
+            )}
+            {mode === 'register' && (
               <motion.div
                 key="register"
                 initial={{ opacity: 0, x: 20 }}
@@ -103,7 +111,39 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
                 <RegisterForm onToggleMode={toggleMode} onRegisterSuccess={onAuthSuccess} />
               </motion.div>
             )}
+            {mode === 'forgot' && (
+              <motion.div
+                key="forgot"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ForgotPasswordForm onBack={() => setMode('login')} />
+              </motion.div>
+            )}
           </AnimatePresence>
+
+          {/* Nút Tiếp tục với tư cách Khách */}
+          {mode !== 'forgot' && (
+            <div className="mt-6 text-center">
+              <div className="relative mb-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300" />
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-gray-50 text-gray-500">Hoặc</span>
+                </div>
+              </div>
+              <button
+                onClick={() => navigate('/')}
+                className="w-full py-2.5 px-4 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:border-[#1e3a8a] hover:text-[#1e3a8a] transition-colors"
+              >
+                Tiếp tục với tư cách Khách
+              </button>
+              <p className="mt-2 text-xs text-gray-400">Giới hạn 5 lần tra cứu • Không lưu lịch sử</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
