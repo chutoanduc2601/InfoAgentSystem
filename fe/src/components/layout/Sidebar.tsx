@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { historyService, type HistoryItem } from '../../services/api';
 import { useQueryContext } from '../../context/QueryContext';
@@ -12,6 +12,7 @@ import {
   ChevronRight,
   User,
   LogOut,
+  LogIn,
   Loader2,
   AlertCircle,
   RefreshCw,
@@ -36,7 +37,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
   const [editingTitle,     setEditingTitle]     = useState<string>('');
 
   const location = useLocation();
-  const { loadFromHistory, currentQueryId, sidebarRefreshKey } = useQueryContext();
+  const navigate = useNavigate();
+  const { loadFromHistory, currentQueryId, sidebarRefreshKey, guestQueriesRemaining } = useQueryContext();
+
+  const isGuest = userId === null;
 
   const handleRename = async (id: string) => {
     if (!editingTitle.trim()) return;
@@ -67,9 +71,25 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
         await fetchHistory(user.id);
       } else {
         setUserName('Khách');
+        setUserId(null);
       }
     };
     init();
+
+    // Lắng nghe auth state change để update khi đăng nhập/đăng xuất
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        setUserName(session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Người dùng');
+        setUserId(session.user.id);
+        await fetchHistory(session.user.id);
+      } else {
+        setUserName('Khách');
+        setUserId(null);
+        setHistory([]);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const fetchHistory = async (uid: string) => {
@@ -140,144 +160,162 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
         </Link>
       </div>
 
-      {/* Search History */}
+      {/* Search History — Ẩn cho khách */}
       <div className="flex-1 overflow-y-auto px-3 py-2 scrollbar-thin scrollbar-thumb-[#2a4590]">
-        {!isCollapsed && (
-          <div className="flex items-center justify-between mb-3 px-2">
-            <h3 className="text-xs font-semibold text-blue-300 uppercase tracking-wider">
-              Lịch sử
-            </h3>
-            {userId && (
-              <button
-                onClick={() => fetchHistory(userId)}
-                title="Làm mới"
-                disabled={isLoadingHistory}
-                className="text-blue-300 hover:text-white transition-colors disabled:opacity-40"
-              >
-                <RefreshCw size={13} className={isLoadingHistory ? 'animate-spin' : ''} />
-              </button>
+        {isGuest ? (
+          // Thông báo cho khách
+          !isCollapsed && (
+            <div className="text-center py-8 px-2">
+              <User size={32} className="mx-auto text-blue-300 mb-3 opacity-60" />
+              <p className="text-sm text-blue-200 mb-1">Chế độ Khách</p>
+              <p className="text-xs text-gray-400 mb-3">
+                Còn {guestQueriesRemaining} lượt tra cứu
+              </p>
+              <p className="text-xs text-gray-400">
+                Đăng nhập để lưu lịch sử tra cứu
+              </p>
+            </div>
+          )
+        ) : (
+          <>
+            {!isCollapsed && (
+              <div className="flex items-center justify-between mb-3 px-2">
+                <h3 className="text-xs font-semibold text-blue-300 uppercase tracking-wider">
+                  Lịch sử
+                </h3>
+                {userId && (
+                  <button
+                    onClick={() => fetchHistory(userId)}
+                    title="Làm mới"
+                    disabled={isLoadingHistory}
+                    className="text-blue-300 hover:text-white transition-colors disabled:opacity-40"
+                  >
+                    <RefreshCw size={13} className={isLoadingHistory ? 'animate-spin' : ''} />
+                  </button>
+                )}
+              </div>
             )}
-          </div>
-        )}
 
-        {/* Loading state */}
-        {isLoadingHistory && (
-          <div className={`flex ${isCollapsed ? 'justify-center' : 'items-center gap-2 px-2'} text-blue-300 text-xs py-3`}>
-            <Loader2 size={14} className="animate-spin shrink-0" />
-            {!isCollapsed && <span>Đang tải...</span>}
-          </div>
-        )}
-
-        {/* Error state */}
-        {historyError && !isLoadingHistory && (
-          <div className={`flex ${isCollapsed ? 'justify-center' : 'items-center gap-2 px-2'} text-red-300 text-xs py-3`}>
-            <AlertCircle size={14} className="shrink-0" />
-            {!isCollapsed && <span>{historyError}</span>}
-          </div>
-        )}
-
-        {/* History list */}
-        {!isLoadingHistory && !historyError && (
-          <ul className="space-y-1">
-            {history.length === 0 && !isCollapsed && (
-              <li className="text-xs text-gray-400 px-2 py-4 text-center">
-                Chưa có lịch sử tra cứu
-              </li>
+            {/* Loading state */}
+            {isLoadingHistory && (
+              <div className={`flex ${isCollapsed ? 'justify-center' : 'items-center gap-2 px-2'} text-blue-300 text-xs py-3`}>
+                <Loader2 size={14} className="animate-spin shrink-0" />
+                {!isCollapsed && <span>Đang tải...</span>}
+              </div>
             )}
-            {history.map((item) => {
-              const isActive = item.queryId === currentQueryId;
-              const isEditing = item.queryId === editingId;
-              const canLoad  = item.status === 'done' && item.report != null;
 
-              return (
-                <li key={item.queryId} className="group relative">
-                  {isEditing ? (
-                    <div className="flex items-center gap-1 p-2 bg-[#2a4590] rounded-lg">
-                      <input
-                        autoFocus
-                        className="flex-1 bg-blue-900 text-white text-sm p-1 rounded outline-none border border-blue-400"
-                        value={editingTitle}
-                        onChange={(e) => setEditingTitle(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') handleRename(item.queryId);
-                          if (e.key === 'Escape') setEditingId(null);
-                        }}
-                      />
-                      <button onClick={() => handleRename(item.queryId)} className="text-green-400 hover:text-white">
-                        <Check size={14} />
-                      </button>
-                      <button onClick={() => setEditingId(null)} className="text-red-400 hover:text-white">
-                        <X size={14} />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="relative">
-                      <button
-                        onClick={() => canLoad && loadFromHistory(item)}
-                        disabled={!canLoad}
-                        title={item.queryText}
-                        className={`flex items-center w-full p-2 rounded-lg transition-colors text-left
-                          ${isActive ? 'bg-[#2a4590]' : 'hover:bg-[#1e3a8a]'}
-                          ${isCollapsed ? 'justify-center' : ''}
-                          ${!canLoad ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}
-                        `}
-                      >
-                        {/* Icon + status dot */}
-                        <div className="relative shrink-0">
-                          <MessageSquare
-                            size={18}
-                            className={`${isActive ? 'text-blue-400' : 'text-gray-400 group-hover:text-blue-300'} transition-colors`}
-                          />
-                          <span
-                            className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ${statusColor(item.status)}`}
-                          />
-                        </div>
+            {/* Error state */}
+            {historyError && !isLoadingHistory && (
+              <div className={`flex ${isCollapsed ? 'justify-center' : 'items-center gap-2 px-2'} text-red-300 text-xs py-3`}>
+                <AlertCircle size={14} className="shrink-0" />
+                {!isCollapsed && <span>{historyError}</span>}
+              </div>
+            )}
 
-                        {/* Text */}
-                        {!isCollapsed && (
-                          <div className="ml-3 min-w-0 flex-1 pr-8">
-                            <p className={`text-sm truncate ${isActive ? 'text-white font-medium' : 'text-gray-200'}`}>
-                              {item.queryText}
-                            </p>
-                            <p className="text-[10px] text-blue-300 mt-0.5">
-                              {new Date(item.createdAt).toLocaleString('vi-VN', {
-                                day: '2-digit', month: '2-digit',
-                                hour: '2-digit', minute: '2-digit',
-                              })}
-                            </p>
-                          </div>
-                        )}
-                      </button>
+            {/* History list */}
+            {!isLoadingHistory && !historyError && (
+              <ul className="space-y-1">
+                {history.length === 0 && !isCollapsed && (
+                  <li className="text-xs text-gray-400 px-2 py-4 text-center">
+                    Chưa có lịch sử tra cứu
+                  </li>
+                )}
+                {history.map((item) => {
+                  const isActive = item.queryId === currentQueryId;
+                  const isEditing = item.queryId === editingId;
+                  const canLoad  = item.status === 'done' && item.report != null;
 
-                      {/* Action Buttons (Edit/Delete) - Only show on hover and when not collapsed */}
-                      {!isCollapsed && (
-                        <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-inherit">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditingId(item.queryId);
-                              setEditingTitle(item.queryText);
+                  return (
+                    <li key={item.queryId} className="group relative">
+                      {isEditing ? (
+                        <div className="flex items-center gap-1 p-2 bg-[#2a4590] rounded-lg">
+                          <input
+                            autoFocus
+                            className="flex-1 bg-blue-900 text-white text-sm p-1 rounded outline-none border border-blue-400"
+                            value={editingTitle}
+                            onChange={(e) => setEditingTitle(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') handleRename(item.queryId);
+                              if (e.key === 'Escape') setEditingId(null);
                             }}
-                            className="p-1 hover:text-blue-400 text-gray-400 transition-colors"
-                            title="Đổi tên"
-                          >
-                            <Pencil size={14} />
+                          />
+                          <button onClick={() => handleRename(item.queryId)} className="text-green-400 hover:text-white">
+                            <Check size={14} />
                           </button>
+                          <button onClick={() => setEditingId(null)} className="text-red-400 hover:text-white">
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="relative">
                           <button
-                            onClick={(e) => handleDelete(e, item.queryId)}
-                            className="p-1 hover:text-red-400 text-gray-400 transition-colors"
-                            title="Xóa"
+                            onClick={() => canLoad && loadFromHistory(item)}
+                            disabled={!canLoad}
+                            title={item.queryText}
+                            className={`flex items-center w-full p-2 rounded-lg transition-colors text-left
+                              ${isActive ? 'bg-[#2a4590]' : 'hover:bg-[#1e3a8a]'}
+                              ${isCollapsed ? 'justify-center' : ''}
+                              ${!canLoad ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}
+                            `}
                           >
-                            <Trash2 size={14} />
+                            {/* Icon + status dot */}
+                            <div className="relative shrink-0">
+                              <MessageSquare
+                                size={18}
+                                className={`${isActive ? 'text-blue-400' : 'text-gray-400 group-hover:text-blue-300'} transition-colors`}
+                              />
+                              <span
+                                className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ${statusColor(item.status)}`}
+                              />
+                            </div>
+
+                            {/* Text */}
+                            {!isCollapsed && (
+                              <div className="ml-3 min-w-0 flex-1 pr-8">
+                                <p className={`text-sm truncate ${isActive ? 'text-white font-medium' : 'text-gray-200'}`}>
+                                  {item.queryText}
+                                </p>
+                                <p className="text-[10px] text-blue-300 mt-0.5">
+                                  {new Date(item.createdAt).toLocaleString('vi-VN', {
+                                    day: '2-digit', month: '2-digit',
+                                    hour: '2-digit', minute: '2-digit',
+                                  })}
+                                </p>
+                              </div>
+                            )}
                           </button>
+
+                          {/* Action Buttons (Edit/Delete) - Only show on hover and when not collapsed */}
+                          {!isCollapsed && (
+                            <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-inherit">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditingId(item.queryId);
+                                  setEditingTitle(item.queryText);
+                                }}
+                                className="p-1 hover:text-blue-400 text-gray-400 transition-colors"
+                                title="Đổi tên"
+                              >
+                                <Pencil size={14} />
+                              </button>
+                              <button
+                                onClick={(e) => handleDelete(e, item.queryId)}
+                                className="p-1 hover:text-red-400 text-gray-400 transition-colors"
+                                title="Xóa"
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
+                          )}
                         </div>
                       )}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </>
         )}
       </div>
 
@@ -294,31 +332,48 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
           {!isCollapsed && (
             <div className="ml-3 text-left">
               <p className="text-sm font-medium">{userName}</p>
-              <p className="text-xs text-blue-300">Gói miễn phí</p>
+              <p className="text-xs text-blue-300">
+                {isGuest ? `Còn ${guestQueriesRemaining} lượt` : 'Gói miễn phí'}
+              </p>
             </div>
           )}
         </button>
 
-        <button
-          className={`flex items-center w-full p-2 mt-1 rounded-lg hover:bg-[#2a4590] transition-colors ${
-            isCollapsed ? 'justify-center' : ''
-          }`}
-          title="Cài đặt"
-        >
-          <Settings size={20} className="text-gray-400 shrink-0" />
-          {!isCollapsed && <span className="ml-3 text-sm text-gray-200">Cài đặt</span>}
-        </button>
+        {!isGuest && (
+          <button
+            className={`flex items-center w-full p-2 mt-1 rounded-lg hover:bg-[#2a4590] transition-colors ${
+              isCollapsed ? 'justify-center' : ''
+            }`}
+            title="Cài đặt"
+          >
+            <Settings size={20} className="text-gray-400 shrink-0" />
+            {!isCollapsed && <span className="ml-3 text-sm text-gray-200">Cài đặt</span>}
+          </button>
+        )}
 
-        <button
-          onClick={async () => { await supabase.auth.signOut(); }}
-          className={`flex items-center w-full p-2 mt-1 rounded-lg hover:bg-red-500/20 text-red-300 transition-colors ${
-            isCollapsed ? 'justify-center' : ''
-          }`}
-          title="Đăng xuất"
-        >
-          <LogOut size={20} className="shrink-0" />
-          {!isCollapsed && <span className="ml-3 text-sm font-medium">Đăng xuất</span>}
-        </button>
+        {isGuest ? (
+          <button
+            onClick={() => navigate('/auth')}
+            className={`flex items-center w-full p-2 mt-1 rounded-lg hover:bg-blue-600/30 text-blue-300 transition-colors ${
+              isCollapsed ? 'justify-center' : ''
+            }`}
+            title="Đăng nhập"
+          >
+            <LogIn size={20} className="shrink-0" />
+            {!isCollapsed && <span className="ml-3 text-sm font-medium">Đăng nhập</span>}
+          </button>
+        ) : (
+          <button
+            onClick={async () => { await supabase.auth.signOut(); }}
+            className={`flex items-center w-full p-2 mt-1 rounded-lg hover:bg-red-500/20 text-red-300 transition-colors ${
+              isCollapsed ? 'justify-center' : ''
+            }`}
+            title="Đăng xuất"
+          >
+            <LogOut size={20} className="shrink-0" />
+            {!isCollapsed && <span className="ml-3 text-sm font-medium">Đăng xuất</span>}
+          </button>
+        )}
       </div>
     </aside>
   );

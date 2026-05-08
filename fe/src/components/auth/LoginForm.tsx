@@ -5,9 +5,10 @@ import { supabase } from '../../lib/supabase';
 interface LoginFormProps {
   onToggleMode: () => void;
   onLoginSuccess: () => void;
+  onForgotPassword: () => void;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, onLoginSuccess }) => {
+export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, onLoginSuccess, onForgotPassword }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -108,9 +109,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, onLoginSucce
           </div>
 
           <div className="text-sm">
-            <a href="#" className="font-medium text-[#1e3a8a] hover:text-[#2e4a9a]">
+            <button
+              type="button"
+              onClick={onForgotPassword}
+              className="font-medium text-[#1e3a8a] hover:text-[#2e4a9a]"
+            >
               Quên mật khẩu?
-            </a>
+            </button>
           </div>
         </div>
 

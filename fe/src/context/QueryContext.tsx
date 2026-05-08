@@ -4,6 +4,12 @@ import { queryService, type HistoryItem, type ReportData } from '../services/api
 import { supabase } from '../lib/supabase';
 
 // ─────────────────────────────────────────────────────
+// Giới hạn tra cứu cho khách
+// ─────────────────────────────────────────────────────
+const GUEST_QUERY_LIMIT = 5;
+const GUEST_QUERY_COUNT_KEY = 'infoagent_guest_query_count';
+
+// ─────────────────────────────────────────────────────
 // Context shape
 // ─────────────────────────────────────────────────────
 
@@ -14,15 +20,35 @@ interface QueryContextType {
   error:             string | null;
   currentStep:       number;
   currentQueryId:    string | null;
-  queryTimestamp:    string | null;
+  queryTimestamp:     string | null;
   /** Key tăng mỗi khi có query mới → Sidebar lắng nghe để tự refresh */
   sidebarRefreshKey: number;
+  /** Số lần tra cứu còn lại cho khách */
+  guestQueriesRemaining: number;
   submitQuery:       (text: string) => Promise<void>;
   /** Load một báo cáo cũ từ lịch sử (không gọi lại AI) */
   loadFromHistory:   (item: HistoryItem) => void;
 }
 
 const QueryContext = createContext<QueryContextType | undefined>(undefined);
+
+// ─────────────────────────────────────────────────────
+// Helper: đếm lượt tra cứu khách qua localStorage
+// ─────────────────────────────────────────────────────
+
+const getGuestQueryCount = (): number => {
+  try {
+    return parseInt(localStorage.getItem(GUEST_QUERY_COUNT_KEY) || '0', 10);
+  } catch {
+    return 0;
+  }
+};
+
+const incrementGuestQueryCount = (): number => {
+  const newCount = getGuestQueryCount() + 1;
+  localStorage.setItem(GUEST_QUERY_COUNT_KEY, String(newCount));
+  return newCount;
+};
 
 // ─────────────────────────────────────────────────────
 // Provider Component
@@ -35,8 +61,11 @@ export const QueryProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [error,             setError]             = useState<string | null>(null);
   const [currentStep,       setCurrentStep]       = useState(-1);
   const [currentQueryId,    setCurrentQueryId]    = useState<string | null>(null);
-  const [queryTimestamp,    setQueryTimestamp]    = useState<string | null>(null);
+  const [queryTimestamp,     setQueryTimestamp]    = useState<string | null>(null);
   const [sidebarRefreshKey, setSidebarRefreshKey] = useState(0);
+  const [guestQueriesRemaining, setGuestQueriesRemaining] = useState(
+    Math.max(0, GUEST_QUERY_LIMIT - getGuestQueryCount())
+  );
 
   const navigate = useNavigate();
 
@@ -48,6 +77,18 @@ export const QueryProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   // ───── Submit query mới → gọi AI → lưu DB ─────
   const submitQuery = async (text: string) => {
+    const userId = await getCurrentUserId();
+    const isGuest = !userId;
+
+    // Kiểm tra giới hạn cho khách
+    if (isGuest) {
+      const currentCount = getGuestQueryCount();
+      if (currentCount >= GUEST_QUERY_LIMIT) {
+        setError(`Bạn đã sử dụng hết ${GUEST_QUERY_LIMIT} lượt tra cứu miễn phí. Vui lòng đăng nhập để tiếp tục.`);
+        return;
+      }
+    }
+
     setQuery(text);
     setIsLoading(true);
     setError(null);
@@ -57,8 +98,6 @@ export const QueryProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setCurrentStep(0);
 
     try {
-      const userId = await getCurrentUserId();
-
       // Visual pipeline animation
       const steps = [0, 1, 2, 3];
       for (const step of steps) {
@@ -72,14 +111,22 @@ export const QueryProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         throw new Error(result.error || 'Lỗi không xác định từ AI Service');
       }
 
+      // Tăng bộ đếm cho khách
+      if (isGuest) {
+        incrementGuestQueryCount();
+        setGuestQueriesRemaining(Math.max(0, GUEST_QUERY_LIMIT - getGuestQueryCount()));
+      }
+
       const now = new Date().toISOString();
       setReport(result.data);
       setCurrentQueryId(result.queryId ?? null);
       setQueryTimestamp(now);
       setCurrentStep(4); // Complete
 
-      // Báo Sidebar refresh để hiển thị item mới
-      setSidebarRefreshKey(prev => prev + 1);
+      // Báo Sidebar refresh để hiển thị item mới (chỉ có nghĩa khi đã đăng nhập)
+      if (!isGuest) {
+        setSidebarRefreshKey(prev => prev + 1);
+      }
 
       navigate('/report');
     } catch (err: unknown) {
@@ -107,6 +154,7 @@ export const QueryProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     <QueryContext.Provider value={{
       query, report, isLoading, error, currentStep,
       currentQueryId, queryTimestamp, sidebarRefreshKey,
+      guestQueriesRemaining,
       submitQuery, loadFromHistory,
     }}>
       {children}
