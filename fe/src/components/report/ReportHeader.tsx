@@ -27,12 +27,15 @@ export const ReportHeader = ({ title, status, timestamp }: ReportHeaderProps) =>
         </div>
       </div>
       
-      <div className="flex items-center space-x-3 shrink-0">
+      <div className="flex items-center space-x-3 shrink-0 print:hidden">
         <button className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors shadow-sm font-medium">
           <Share2 size={18} />
           <span>Chia sẻ</span>
         </button>
-        <button className="flex items-center space-x-2 px-4 py-2 bg-[#1e3a8a] text-white rounded-lg hover:bg-[#2e4a9a] transition-colors shadow-sm font-medium">
+        <button 
+          onClick={() => window.print()}
+          className="flex items-center space-x-2 px-4 py-2 bg-[#1e3a8a] text-white rounded-lg hover:bg-[#2e4a9a] transition-colors shadow-sm font-medium"
+        >
           <Download size={18} />
           <span>Xuất PDF</span>
         </button>

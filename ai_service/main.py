@@ -15,8 +15,28 @@ from agents.orchestrator_agent import orchestrate
 from agents.search_agent import search_agent
 from agents.process_agent import process_agent
 from agents.answer_agent import answer_agent
+import time
 
 app = FastAPI(title="InfoAgent System - AI Service")
+
+# =========================
+# CACHING LAYER
+# =========================
+CACHE = {}
+CACHE_TTL = 3600  # 1 hour
+
+def get_from_cache(query: str) -> Optional[Dict]:
+    if query in CACHE:
+        item = CACHE[query]
+        if time.time() - item['time'] < CACHE_TTL:
+            return item['data']
+    return None
+
+def set_cache(query: str, data: Dict):
+    CACHE[query] = {
+        'time': time.time(),
+        'data': data
+    }
 
 # =========================
 # API CONTRACT
@@ -53,6 +73,13 @@ async def generate_report(request: QueryRequest):
 
     try:
         # =====================================================
+        # CACHE CHECK
+        # =====================================================
+        cached_result = get_from_cache(request.query)
+        if cached_result:
+            return ReportResponse(**cached_result)
+
+        # =====================================================
         # STEP 1: ORCHESTRATOR
         # =====================================================
         plan = await orchestrate(request.query)
@@ -87,29 +114,30 @@ async def generate_report(request: QueryRequest):
         # =====================================================
         # RESPONSE MAPPING
         # =====================================================
-        return ReportResponse(
-            status="success",
-            query=request.query,
-            confidence_label=(
+        response_dict = {
+            "status": "success",
+            "query": request.query,
+            "confidence_label": (
                 "High Confidence" if answer_result["confidence"] > 0.75
                 else "Medium Confidence" if answer_result["confidence"] > 0.4
                 else "Low Confidence"
             ),
-            # quick_summary=[
-            #     answer_result["answer"][:200]
-            # ],
-            # quick_summary = answer_result["answer"].split("\n")[:3],
-            quick_summary=answer_result.get("summary", []),
-            detailed_report=answer_result["answer"],
-            sources=[
-                SourceModel(
-                    url=r.get("url", ""),
-                    confidence=r.get("score", 0.0)
-                )
+            "quick_summary": answer_result.get("summary", []),
+            "detailed_report": answer_result["answer"],
+            "sources": [
+                {
+                    "url": r.get("url", ""),
+                    "confidence": r.get("score", 0.0)
+                }
                 for r in processed_data.get("results", [])[:5]
             ],
-            recommendations=answer_result.get("recommendations", [])
-        )
+            "recommendations": answer_result.get("recommendations", [])
+        }
+        
+        # Save to cache
+        set_cache(request.query, response_dict)
+        
+        return ReportResponse(**response_dict)
 
     except Exception as e:
         raise HTTPException(
