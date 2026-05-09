@@ -39,7 +39,7 @@ export const ChatSidebar = ({ isOpen, onClose }: ChatSidebarProps) => {
           animate={{ width: 320, opacity: 1 }}
           exit={{ width: 0, opacity: 0 }}
           transition={{ duration: 0.3, ease: 'easeInOut' }}
-          className="h-full bg-white border-l border-gray-200 shadow-xl flex flex-col overflow-hidden shrink-0"
+          className="h-full bg-white border-l border-gray-200 shadow-xl flex flex-col overflow-hidden shrink-0 print:hidden"
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-[#f8fafc]">

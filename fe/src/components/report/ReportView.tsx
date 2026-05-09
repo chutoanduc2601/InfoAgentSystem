@@ -63,10 +63,10 @@ export const ReportView = () => {
     : new Date().toLocaleString("vi-VN");
 
   return (
-    <div className="flex h-full w-full overflow-hidden bg-white">
-      <div className="flex-1 overflow-y-auto px-8 py-10">
+    <div className="flex h-full w-full overflow-hidden bg-white print:h-auto print:overflow-visible print:block">
+      <div className="flex-1 overflow-y-auto px-8 py-10 print:overflow-visible print:p-0">
         {/* Floating Chat Toggle Button */}
-        <div className="fixed bottom-6 right-6 z-50">
+        <div className="fixed bottom-6 right-6 z-50 print:hidden">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
