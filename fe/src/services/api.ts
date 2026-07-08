@@ -16,12 +16,24 @@ export interface HistoryItem {
   report:    ReportData | null;
 }
 
+export interface ForecastData {
+  actual_values:    number[];
+  actual_labels:    string[];
+  forecast_values:  number[];
+  forecast_labels:  string[];
+  unit:             string;
+  title:            string;
+}
+
 export interface ReportData {
   confidence_label: string;
   quick_summary:    string[];
   detailed_report:  string;
   sources:          { url: string; confidence: number }[];
   recommendations:  string[];
+  intent?:          string;
+  intent_confidence?: number;
+  forecast?:        ForecastData | null;
 }
 
 // ─────────────────────────────────────────────────────

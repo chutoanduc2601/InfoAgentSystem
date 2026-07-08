@@ -193,3 +193,13 @@ import joblib
 scaler_filename = 'weather_scaler.pkl'
 joblib.dump(scaler, scaler_filename)
 print(f"Scaler saved successfully as: {scaler_filename}")
+
+# Nén toàn bộ mô hình, scaler và các biểu đồ PNG thành file zip để tải về dễ dàng
+import zipfile
+import glob
+zip_filename = 'weather_forecast_outputs.zip'
+files_to_zip = glob.glob('*.png') + glob.glob('*.keras') + glob.glob('*.pkl')
+with zipfile.ZipFile(zip_filename, 'w') as zipf:
+    for file in files_to_zip:
+        zipf.write(file)
+print(f"Successfully zipped all outputs to: {zip_filename}")

@@ -147,3 +147,14 @@ model.save('bitcoin_lstm.keras')
 import joblib
 joblib.dump(scaler, 'bitcoin_scaler.pkl')
 print("\nBitcoin Model & Scaler saved successfully.")
+
+# Nén toàn bộ mô hình, scaler và biểu đồ PNG thành file zip để tải về dễ dàng
+import zipfile
+zip_filename = 'bitcoin_forecast_outputs.zip'
+files_to_zip = ['bitcoin_prediction.png', 'bitcoin_lstm.keras', 'bitcoin_scaler.pkl']
+with zipfile.ZipFile(zip_filename, 'w') as zipf:
+    for file in files_to_zip:
+        if os.path.exists(file):
+            zipf.write(file)
+            print(f"Added to zip: {file}")
+print(f"Successfully zipped all outputs to: {zip_filename}")

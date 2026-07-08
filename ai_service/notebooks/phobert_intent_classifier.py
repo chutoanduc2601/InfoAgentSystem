@@ -44,9 +44,22 @@ print(f"Train samples: {len(train_texts)}, Val samples: {len(val_texts)}")
 # =====================================================================
 # 2. TOKENIZATION
 # =====================================================================
+# HƯỚNG DẪN KHẮC PHỤC LỖI KẾT NỐI (NAME RESOLUTION ERROR):
+# 1. Nếu chạy trên Kaggle: Bạn bắt buộc phải BẬT Internet ở cột cài đặt bên phải:
+#    Settings -> Internet -> Gạt nút sang ON (Cần xác thực SĐT để mở khóa tính năng này).
+# 2. Nếu chạy Local (ở VN) bị chặn mạng hoặc kết nối chậm: Bỏ comment 2 dòng dưới đây để dùng Mirror Server:
+# import os
+# os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+
 MODEL_NAME = "vinai/phobert-base-v2"
 print(f"Loading tokenizer: {MODEL_NAME}")
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+try:
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+except Exception as e:
+    print("\n[LỖI] Không thể kết nối tới Hugging Face để tải Tokenizer.")
+    print("-> Nếu chạy trên Kaggle: Bật 'Internet' ở panel cài đặt bên phải (Settings -> Internet -> ON).")
+    print("-> Nếu chạy Local: Kiểm tra mạng hoặc thử bỏ comment dòng cấu hình 'HF_ENDPOINT' phía trên.\n")
+    raise e
 
 train_encodings = tokenizer(train_texts, truncation=True, padding=True, max_length=64)
 val_encodings = tokenizer(val_texts, truncation=True, padding=True, max_length=64)
@@ -71,7 +84,13 @@ val_dataset = IntentDataset(val_encodings, val_labels)
 # 3. KHỞI TẠO MODEL & TRAINING ARGUMENTS
 # =====================================================================
 print("Loading model...")
-model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=3)
+try:
+    model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=3)
+except Exception as e:
+    print("\n[LỖI] Không thể kết nối tới Hugging Face để tải Model.")
+    print("-> Nếu chạy trên Kaggle: Bật 'Internet' ở panel cài đặt bên phải (Settings -> Internet -> ON).")
+    print("-> Nếu chạy Local: Kiểm tra mạng hoặc thử bỏ comment dòng cấu hình 'HF_ENDPOINT' phía trên.\n")
+    raise e
 
 # Đảm bảo sử dụng GPU nếu có
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

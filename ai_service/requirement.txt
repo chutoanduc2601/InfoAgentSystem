@@ -6,3 +6,10 @@ python-dotenv
 openai
 pydantic
 tavily-python
+torch
+transformers
+tensorflow
+joblib
+numpy
+pandas
+scikit-learn

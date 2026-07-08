@@ -18,11 +18,16 @@ public class QueryController {
     @Value("${ai-service.url:http://localhost:8000}")
     private String aiServiceUrl;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
     private final HistoryService historyService;
 
     public QueryController(HistoryService historyService) {
         this.historyService = historyService;
+        org.springframework.http.client.SimpleClientHttpRequestFactory factory = 
+            new org.springframework.http.client.SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(10000); // 10s connection timeout
+        factory.setReadTimeout(35000);    // 35s read timeout (to accommodate slow LLM generations)
+        this.restTemplate = new RestTemplate(factory);
     }
 
     @PostMapping("/query")
