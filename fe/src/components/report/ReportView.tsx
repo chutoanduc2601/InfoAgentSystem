@@ -7,6 +7,7 @@ import { ReportHeader } from "./ReportHeader";
 import { ReportSummary } from "./ReportSummary";
 import { ReportCitations } from "./ReportCitations";
 import { ChatSidebar } from "./ChatSidebar";
+import { ForecastChart } from "./ForecastChart";
 import {
   MessageSquarePlus,
   Loader2,
@@ -91,6 +92,10 @@ export const ReportView = () => {
             <ReactMarkdown>{report.detailed_report}</ReactMarkdown>
           </div>
         </div>
+
+        {report.forecast && (
+          <ForecastChart forecast={report.forecast} />
+        )}
 
         {report.recommendations && report.recommendations.length > 0 && (
           <div className="mt-8">

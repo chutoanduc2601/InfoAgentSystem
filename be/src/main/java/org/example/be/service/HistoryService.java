@@ -29,9 +29,16 @@ public class HistoryService {
     private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
     public HistoryService() {
-        // Cấu hình RestTemplate để hỗ trợ PATCH
+        // Cấu hình RestTemplate để hỗ trợ PATCH với timeout dùng HttpClient 5
+        org.apache.hc.client5.http.config.RequestConfig requestConfig = org.apache.hc.client5.http.config.RequestConfig.custom()
+            .setConnectTimeout(org.apache.hc.core5.util.Timeout.ofMilliseconds(10000))
+            .setResponseTimeout(org.apache.hc.core5.util.Timeout.ofMilliseconds(15000))
+            .build();
+        org.apache.hc.client5.http.impl.classic.CloseableHttpClient httpClient = org.apache.hc.client5.http.impl.classic.HttpClients.custom()
+            .setDefaultRequestConfig(requestConfig)
+            .build();
         org.springframework.http.client.HttpComponentsClientHttpRequestFactory factory = 
-            new org.springframework.http.client.HttpComponentsClientHttpRequestFactory();
+            new org.springframework.http.client.HttpComponentsClientHttpRequestFactory(httpClient);
         this.restTemplate = new RestTemplate(factory);
     }
 
