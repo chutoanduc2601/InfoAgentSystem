@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Sidebar } from './Sidebar';
-import { Header } from './Header';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -18,10 +17,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
       {/* Main Content Area */}
       <div className="flex flex-col flex-1 min-w-0 h-screen transition-all duration-300 print:h-auto print:overflow-visible">
-        <div className="print:hidden">
-          <Header />
-        </div>
-        
         {/* Main Content Body */}
         <main className="flex-1 overflow-y-auto p-6 md:p-8 relative print:overflow-visible print:p-0">
           <div className="max-w-6xl mx-auto h-full flex flex-col print:h-auto print:block">
